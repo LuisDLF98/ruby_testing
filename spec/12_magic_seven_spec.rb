@@ -70,9 +70,17 @@ describe MagicSeven do
   # Write a test for each of the following methods:
 
   describe '#subtract_four' do
+    it 'returns 4' do
+      number = 8
+      expect(game.subtract_four(number)).to eq(4)
+    end
   end
 
   describe '#divide_by_two' do
+    it 'returns 3' do
+      number = 6
+      expect(game.divide_by_two(number)).to eq(3)
+    end
   end
 
   # The following tests will need you to create new instances of MagicSeven with
@@ -84,20 +92,29 @@ describe MagicSeven do
   # positive integer as the random_number. Update the context with the number.
   describe '#play' do
     context 'when the random number is ...' do
+      subject(:game) { described_class.new }
+
       # remove the 'x' before running this test
-      xit 'will return 7' do
+      it 'will return 7' do
+        expect(game.play).to eq(7)
       end
     end
 
     context 'when the random number is ...' do
       # remove the 'x' before running this test
-      xit 'will return 7' do
+      subject(:game) { described_class.new }
+
+      it 'will return 7' do
+        expect(game.play).to eq(7)
       end
     end
 
     context 'when the random number is ...' do
       # remove the 'x' before running this test
-      xit 'will return 7' do
+      subject(:game) { described_class.new }
+
+      it 'will return 7' do
+        expect(game.play).to eq(7)
       end
     end
   end
