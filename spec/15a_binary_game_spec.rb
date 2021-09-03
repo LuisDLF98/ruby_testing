@@ -69,7 +69,7 @@ require_relative '../lib/15c_random_number'
 # will need to stub any inside methods because they will be called when you
 # create an instance of the class.
 
-# 2. You do not have to test methods that only contain 'puts' or 'gets' 
+# 2. You do not have to test methods that only contain 'puts' or 'gets'
 # because they are well-tested in the standard Ruby library.
 
 # 3. Private methods do not need to be tested because they should have test
@@ -171,14 +171,38 @@ describe BinaryGame do
     # Query Method -> Test the return value
 
     # Note: #verify_input will only return a number if it is between?(min, max)
+    subject(:game_input_two) { described_class.new(1, 10) }
 
     context 'when given a valid input as argument' do
-      xit 'returns valid input' do
+      before do
+        valid_input = '4'
+        allow(game_input_two).to receive(:gets).and_return(valid_input)
+      end
+
+      it 'returns valid input' do
+        min = game_input_two.instance_variable_get(:@minimum)
+        max = game_input_two.instance_variable_get(:@maximum)
+
+        valid_input = 4
+        expect(game_input_two.verify_input(min, max, valid_input)).to eq(valid_input)
       end
     end
 
+    subject(:game_input_three) { described_class.new(1, 10) }
+
     context 'when given invalid input as argument' do
-      xit 'returns nil' do
+      before do
+        invalid_input = '1001'
+        valid_input = '4'
+        allow(game_input_two).to receive(:gets).and_return(invalid_input, valid_input)
+      end
+
+      it 'returns nil' do
+        min = game_input_three.instance_variable_get(:@minimum)
+        max = game_input_three.instance_variable_get(:@maximum)
+
+        invalid_input = 1001
+        expect(game_input_three.verify_input(min, max, invalid_input)).to eq(nil)
       end
     end
   end
@@ -268,7 +292,11 @@ describe BinaryGame do
 
     # Write a test for the following context.
     context 'when game minimum and maximum is 100 and 600' do
-      xit 'returns 9' do
+      subject(:game_hundred) { described_class.new(100, 600) }
+
+      it 'returns 9' do
+        max = game_hundred.maximum_guesses
+        expect(max).to eq(9)
       end
     end
   end
@@ -326,7 +354,13 @@ describe BinaryGame do
 
     # Write a test for the following context.
     context 'when game_over? is false five times' do
-      xit 'calls display_turn_order five times' do
+      before do
+        allow(search_display).to receive(:game_over?).and_return(false, false, false, false, false, true)
+      end
+
+      it 'calls display_turn_order five times' do
+        expect(game_display).to receive(:display_turn_order).exactly(5).times.with(search_display)
+        game_display.display_binary_search(search_display)
       end
     end
   end
@@ -339,21 +373,31 @@ describe BinaryGame do
     # #display_turn_order will loop until binary_search.game_over?
 
     # Create a new subject and an instance_double for BinarySearch.
+    subject(:game_display) { described_class.new(1, 10) }
+    let(:search_display) { instance_double(BinarySearch) }
 
     before do
       # You'll need to create a few method stubs.
+      allow(game_display).to receive(:display_guess)
+      allow(search_display).to receive(:make_guess)
+      allow(search_display).to receive(:update_range)
     end
 
     # Command Method -> Test the change in the observable state
-    xit 'increases guess_count by one' do
+    it 'increases guess_count by one' do
+      expect { game_display.display_turn_order(search_display) }.to change { game_display.instance_variable_get(:@guess_count) }.by(1)
     end
 
     # Method with Outgoing Command -> Test that a message is sent
-    xit 'sends make_guess' do
+    it 'sends make_guess' do
+      expect(search_display).to receive(:make_guess).once
+      game_display.display_turn_order(search_display)
     end
 
     # Method with Outgoing Command -> Test that a message is sent
-    xit 'sends update_range' do
+    it 'sends update_range' do
+      expect(search_display).to receive(:update_range).once
+      game_display.display_turn_order(search_display)
     end
 
     # Using method expectations can be confusing. Stubbing the methods above
